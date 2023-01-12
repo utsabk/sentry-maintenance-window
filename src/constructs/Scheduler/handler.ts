@@ -19,14 +19,14 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   });
 
   if (!pendingItems) {
-    console.log('No pending items');
+    console.log('No pending items, exiting.');
     return undefined;
   }
 
   const sentryToken = await getSentryToken();
 
   if (!sentryToken) {
-    throw new Error('Sentry token is missing');
+    throw new Error('Missing Sentry token!');
   }
 
   return Promise.allSettled(
@@ -57,11 +57,11 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
 };
 
 function isDateInRange(dateString: string, now: Date) {
-  const timestamp = new Date(dateString).getTime();
   const offset = 5 * 60 * 1000; // 5 minutes. Covers auto-retries on lambda error.
-  const offsetStart = now.getTime() - offset;
-  const offsetEnd = now.getTime() + offset;
-  return timestamp > offsetStart && timestamp < offsetEnd;
+  const rangeBegin = now.getTime() - offset;
+  const rangeEnd = now.getTime() + offset;
+  const timestamp = new Date(dateString).getTime();
+  return timestamp > rangeBegin && timestamp < rangeEnd;
 }
 
 async function getSentryToken() {
