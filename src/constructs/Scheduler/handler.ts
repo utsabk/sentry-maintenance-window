@@ -13,8 +13,8 @@ const ssmClient = new SecretsManagerClient({});
 export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   const now = new Date();
 
-  const pendingItems = configEntries.filter(({ downtimeRange }) => {
-    const [startDate, endDate] = downtimeRange;
+  const pendingItems = configEntries.filter(({ downtimePeriod }) => {
+    const [startDate, endDate] = downtimePeriod;
     return isDateInRange(startDate, now) || isDateInRange(endDate, now);
   });
 
@@ -30,17 +30,25 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   }
 
   return Promise.allSettled(
-    pendingItems.map(async ({ projectSlug, clientKey, downtimeRange }) => {
+    pendingItems.map(async ({ projectSlug, clientKey, downtimePeriod }) => {
+      const [endDate] = downtimePeriod;
+      const isActive = isDateInRange(endDate, now);
+
+      console.log(
+        `${
+          isActive ? 'Activating' : 'Deactivating'
+        } key "${clientKey}" for project "${projectSlug}"`
+      );
+
       try {
-        const [endDate] = downtimeRange;
         const resp = await toggleSentryKey({
           projectSlug,
           sentryToken,
           clientKey,
-          isActive: isDateInRange(endDate, now),
+          isActive,
         });
         console.log('Response status', resp?.status);
-        console.log('Response body', resp?.body);
+        console.log('Response body', await resp?.json());
       } catch (error) {
         console.error(error);
       }
