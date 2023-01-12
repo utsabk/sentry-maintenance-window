@@ -3,7 +3,10 @@ import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
+
+import { sentryTokenSecretManagerId } from './consts';
 
 export class Scheduler extends NestedStack {
   constructor(scope: Construct) {
@@ -20,6 +23,14 @@ export class Scheduler extends NestedStack {
         minify: true,
       },
     });
+
+    const sentrySecret = Secret.fromSecretNameV2(
+      this,
+      'sentry-secret',
+      sentryTokenSecretManagerId
+    );
+
+    sentrySecret.grantRead(fn);
 
     new Rule(this, 'rule', {
       schedule: Schedule.cron({ minute: '0/30' }),

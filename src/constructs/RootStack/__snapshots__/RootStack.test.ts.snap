@@ -21,7 +21,7 @@ exports[`RootStack produces a correct CloudFormation template 1`] = `
               {
                 "Ref": "AWS::URLSuffix",
               },
-              "/cdk-hnb659fds-assets-dummy-account-dummy-region/1b13607a75bafababdaee2c759a44c3f069c5d437f98dddc8fa4fa52e960e833.json",
+              "/cdk-hnb659fds-assets-dummy-account-dummy-region/825547faf2a2bd35a869d1f30a1bbb88d979168856954e18da737f0b1aa908f9.json",
             ],
           ],
         },
