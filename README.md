@@ -1,6 +1,6 @@
 # sentry-maintenance-window
 
-This disables reporting to Sentry by deactivating the client key for a duration.
+This temporarily disables accepting events for a Sentry key.
 
 ## How to use
 
