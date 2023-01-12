@@ -11,11 +11,11 @@ import { sentryTokenSecretManagerId } from './consts';
 const ssmClient = new SecretsManagerClient({});
 
 export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
-  const now = new Date();
+  const dateNow = new Date();
 
   const pendingItems = configEntries.filter(({ downtimePeriod }) => {
     const [startDate, endDate] = downtimePeriod;
-    return isDateInRange(startDate, now) || isDateInRange(endDate, now);
+    return isInRange(startDate, dateNow) || isInRange(endDate, dateNow);
   });
 
   if (!pendingItems) {
@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   return Promise.allSettled(
     pendingItems.map(async ({ projectSlug, clientKey, downtimePeriod }) => {
       const [endDate] = downtimePeriod;
-      const isActive = isDateInRange(endDate, now);
+      const isActive = isInRange(endDate, dateNow);
 
       console.log(
         `${
@@ -56,12 +56,11 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   );
 };
 
-function isDateInRange(dateString: string, now: Date) {
-  const offset = 5 * 60 * 1000; // 5 minutes. Covers auto-retries on lambda error.
-  const rangeBegin = now.getTime() - offset;
-  const rangeEnd = now.getTime() + offset;
-  const timestamp = new Date(dateString).getTime();
-  return timestamp > rangeBegin && timestamp < rangeEnd;
+function isInRange(entryDateString: string, dateNow: Date) {
+  const target = new Date(entryDateString).getTime();
+  const now = dateNow.getTime();
+  const lambdaStartDelay = 30; // assume lambda will start in less than 30 seconds
+  return now >= target && now < target + lambdaStartDelay; // does not cover lambda auto-retries (3 times every minute)
 }
 
 async function getSentryToken() {
