@@ -9,6 +9,27 @@ exports[`RootStack produces a correct CloudFormation template 1`] = `
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
+  "Resources": {
+    "SchedulerNestedStackSchedulerNestedStackResourceA5A875E1": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "",
+            [
+              "https://s3.dummy-region.",
+              {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/cdk-hnb659fds-assets-dummy-account-dummy-region/1b13607a75bafababdaee2c759a44c3f069c5d437f98dddc8fa4fa52e960e833.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
   "Rules": {
     "CheckBootstrapVersion": {
       "Assertions": [

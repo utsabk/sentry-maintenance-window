@@ -1,6 +1,6 @@
 import { App } from 'aws-cdk-lib';
 
-import { RootStack } from './constructs/RootStack';
+import { RootStack } from './constructs/RootStack/RootStack';
 
 const app = new App();
 

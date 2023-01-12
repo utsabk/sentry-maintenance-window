@@ -8,8 +8,8 @@ describe('RootStack', () => {
     const app = new App();
     const stack = new RootStack(app, 'test-app', {
       env: {
-        account: 'dummyAccount',
-        region: 'dummyRegion',
+        account: 'dummy-account',
+        region: 'dummy-region',
       },
     });
     const template = Template.fromStack(stack);
