@@ -24,6 +24,11 @@ export class Scheduler extends NestedStack {
       },
     });
 
+    new Rule(this, 'rule', {
+      schedule: Schedule.cron({ minute: '0/30' }),
+      targets: [new LambdaFunction(fn)],
+    });
+
     const sentrySecret = Secret.fromSecretNameV2(
       this,
       'sentry-secret',
@@ -31,10 +36,5 @@ export class Scheduler extends NestedStack {
     );
 
     sentrySecret.grantRead(fn);
-
-    new Rule(this, 'rule', {
-      schedule: Schedule.cron({ minute: '0/30' }),
-      targets: [new LambdaFunction(fn)],
-    });
   }
 }

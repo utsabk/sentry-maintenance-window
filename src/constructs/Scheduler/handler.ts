@@ -18,37 +18,41 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
     return isInRange(startDate, dateNow) || isInRange(endDate, dateNow);
   });
 
-  if (!pendingItems) {
+  if (!pendingItems.length) {
     console.log('No pending items, exiting.');
     return undefined;
   }
 
+  console.log('Fetching Sentry token.');
   const sentryToken = await getSentryToken();
 
-  if (!sentryToken) {
-    throw new Error('Missing Sentry token!');
+  if (sentryToken) {
+    console.log('Sentry token fetched.');
+  } else {
+    throw new Error('Sentry token is missing!');
   }
 
   return Promise.allSettled(
     pendingItems.map(async ({ projectSlug, clientKey, downtimePeriod }) => {
-      const [endDate] = downtimePeriod;
-      const isActive = isInRange(endDate, dateNow);
-
-      console.log(
-        `${
-          isActive ? 'Activating' : 'Deactivating'
-        } key "${clientKey}" for project "${projectSlug}"`
-      );
-
       try {
-        const resp = await toggleSentryKey({
+        const [startDate] = downtimePeriod;
+        const newStateActive = !isInRange(startDate, dateNow);
+
+        console.log(
+          `${
+            newStateActive ? 'Activating' : 'Deactivating'
+          } key "${clientKey}" for project "${projectSlug}"`
+        );
+
+        const response = await toggleSentryKey({
           projectSlug,
           sentryToken,
           clientKey,
-          isActive,
+          isActive: newStateActive,
         });
-        console.log('Response status', resp?.status);
-        console.log('Response body', await resp?.json());
+
+        console.log('Response status', response?.status);
+        console.log('Response body', await response?.json());
       } catch (error) {
         console.error(error);
       }
@@ -56,15 +60,14 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   );
 };
 
-function isInRange(entryDateString: string, dateNow: Date) {
-  const target = new Date(entryDateString).getTime();
+function isInRange(targetDateString: string, dateNow: Date) {
+  const target = new Date(targetDateString).getTime();
   const now = dateNow.getTime();
-  const lambdaStartDelay = 30; // assume lambda will start in less than 30 seconds
-  return now >= target && now < target + lambdaStartDelay; // does not cover lambda auto-retries (3 times every minute)
+  const lambdaDelay = 30 * 1000; // assume lambda start time is less then 30 seconds
+  return now >= target && now < target + lambdaDelay;
 }
 
 async function getSentryToken() {
-  console.log('Fetching Sentry API token');
   const command = new GetSecretValueCommand({
     SecretId: sentryTokenSecretManagerId,
   });

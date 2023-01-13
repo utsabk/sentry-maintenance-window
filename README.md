@@ -1,10 +1,10 @@
 # sentry-maintenance-window
 
-This temporarily disables accepting events for a Sentry key.
+This is used to disable a Sentry client key for a certain period.
 
 ## How to use
 
-Add an entry to `src/config.ts`:
+Add an entry to `src/config.ts`. Example:
 
 ```
 {
