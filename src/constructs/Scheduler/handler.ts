@@ -5,16 +5,16 @@ import {
 import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import fetch from 'node-fetch';
 
-import { configEntries } from '../../config';
-import { sentryTokenSecretManagerId } from './consts';
+import { schedule } from '../../schedule';
+import { CHECK_RATE, ORGANIZATION_SLUG, SENTRY_TOKEN_SSM_ID } from './consts';
 
 const ssmClient = new SecretsManagerClient({});
 
 export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   const dateNow = new Date();
 
-  const pendingItems = configEntries.filter(({ downtimePeriod }) => {
-    const [startDate, endDate] = downtimePeriod;
+  const pendingItems = schedule.filter(({ maintenanceWindow }) => {
+    const [startDate, endDate] = maintenanceWindow;
     return isInRange(startDate, dateNow) || isInRange(endDate, dateNow);
   });
 
@@ -33,21 +33,21 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   }
 
   return Promise.all(
-    pendingItems.map(async ({ projectSlug, clientKey, downtimePeriod }) => {
+    pendingItems.map(async ({ projectSlug, publicKey, maintenanceWindow }) => {
       try {
-        const [startDate] = downtimePeriod;
+        const [startDate] = maintenanceWindow;
         const newStateActive = !isInRange(startDate, dateNow);
 
         console.log(
           `${
             newStateActive ? 'Activating' : 'Deactivating'
-          } key "${clientKey}" for project "${projectSlug}"`
+          } key "${publicKey}" for project "${projectSlug}"`
         );
 
         const response = await toggleSentryKey({
           projectSlug,
           sentryToken,
-          clientKey,
+          publicKey,
           isActive: newStateActive,
         });
 
@@ -63,13 +63,12 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
 function isInRange(targetDateString: string, dateNow: Date) {
   const target = new Date(targetDateString).getTime();
   const now = dateNow.getTime();
-  const lambdaDelay = 30 * 1000; // assume lambda start time is less then 30 seconds
-  return now >= target && now < target + lambdaDelay;
+  return now >= target && now < target + CHECK_RATE * 60 * 1000;
 }
 
 async function getSentryToken() {
   const command = new GetSecretValueCommand({
-    SecretId: sentryTokenSecretManagerId,
+    SecretId: SENTRY_TOKEN_SSM_ID,
   });
   const { SecretString } = await ssmClient.send(command);
   return SecretString;
@@ -79,21 +78,25 @@ async function toggleSentryKey({
   isActive,
   projectSlug,
   sentryToken,
-  clientKey,
+  publicKey,
 }: {
   isActive: boolean;
   projectSlug: string;
   sentryToken: string;
-  clientKey: string;
+  publicKey: string;
 }) {
-  const url = `https://sentry.io/api/0/projects/nordcloud-v4/${projectSlug}/keys/${clientKey}/`;
+  const url = `https://sentry.io/api/0/projects/${ORGANIZATION_SLUG}/${projectSlug}/keys/${publicKey}/`;
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${sentryToken}`,
+  };
+
+  const body = JSON.stringify({ isActive });
 
   return fetch(url, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sentryToken}`,
-    },
-    body: JSON.stringify({ isActive }),
+    headers,
+    body,
   });
 }

@@ -1,1 +1,1 @@
-export * from './Confg';
+export * from './Schedule';

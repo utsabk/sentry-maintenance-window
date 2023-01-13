@@ -9,18 +9,20 @@ Add an entry to `src/config.ts`. Example:
 ```
 {
   projectSlug: 'slug',
-  clientKey: 'key',
-  downtimePeriod: ['2023-01-12T10:00Z', '2023-01-12T10:30Z']
+  publicKey: 'key',
+  maintenanceWindow: ['2023-01-12T10:00Z', '2023-01-12T10:30Z']
 },
 ```
 
-You can get "projectSlug" from *Project Settings > Name*, and "clientKey" from *Projct Settings > Client Keys (DSN) > Configure > Public Key*.
+Get **projectSlug** from `Project Settings > Name`
+
+Get **publicKey** from `Projct Settings > Client Keys (DSN) > Configure > Public Key`
 
 ## Deploy
 
 Push to *main* branch.
 
-## AWS account, credentials and secrets
+## Changing AWS account, credentials and secrets
 
 AWS account and region are set in `src/app` and `.github/workflows/deployment.yml`.
 

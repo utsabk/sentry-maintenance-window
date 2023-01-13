@@ -6,7 +6,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 
-import { sentryTokenSecretManagerId } from './consts';
+import { SENTRY_TOKEN_SSM_ID } from './consts';
 
 export class Scheduler extends NestedStack {
   constructor(scope: Construct) {
@@ -32,7 +32,7 @@ export class Scheduler extends NestedStack {
     const sentrySecret = Secret.fromSecretNameV2(
       this,
       'sentry-secret',
-      sentryTokenSecretManagerId
+      SENTRY_TOKEN_SSM_ID
     );
 
     sentrySecret.grantRead(fn);
