@@ -1,12 +1,12 @@
 # sentry-maintenance-window
 
-This is used to disable a Sentry client key for a certain period.
+This is used to temporarily disable a Sentry public key.
 
 
 
 ## How to use
 
-Add an entry to `src/config.ts`. Example:
+Add an entry to `src/schedule.ts`. Example:
 
 ```
 {
@@ -26,8 +26,8 @@ Push to *main* branch.
 
 ## Changing AWS account, credentials and secrets
 
-AWS account and region are set in `src/app.ts` and `.github/workflows/deployment.yml`.
+AWS account and region are used in `src/app.ts` and `.github/workflows/deployment.yml`.
 
-AWS credentials are stored in [GitHub Secrets](https://github.com/nordcloud/sentry-maintenance-window/settings/secrets/actions).
+Credentials are in [GitHub Secrets](https://github.com/nordcloud/sentry-maintenance-window/settings/secrets/actions).
 
-Sentry API token is stored in AWS Secrets Manager - "sentryMaintenanceWindow/SentryApiToken"
+Sentry API token is in *AWS Secrets Manager* - `sentryMaintenanceWindow/SentryApiToken`.
