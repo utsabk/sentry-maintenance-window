@@ -1,4 +1,4 @@
-type DateString = `${number}-${number}-${number}T${number}:${'00' | '30'}Z`;
+type DateString = `${number}-${number}-${number}T${number}:${number}Z`;
 
 export type Schedule = Array<{
   projectSlug: string;

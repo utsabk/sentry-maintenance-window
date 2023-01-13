@@ -1,3 +1,4 @@
+import { Duration } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -5,7 +6,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 
-import { SENTRY_TOKEN_SSM_ID } from './consts';
+import { CHECK_RATE, SENTRY_TOKEN_SSM_ID } from './consts';
 
 export class Scheduler extends Construct {
   constructor(scope: Construct) {
@@ -24,13 +25,13 @@ export class Scheduler extends Construct {
     });
 
     new Rule(this, 'rule', {
-      schedule: Schedule.cron({ minute: '0/30' }),
+      schedule: Schedule.rate(Duration.minutes(CHECK_RATE)),
       targets: [new LambdaFunction(fn)],
     });
 
     const sentrySecret = Secret.fromSecretNameV2(
       this,
-      'sentry-secret',
+      'sentry-token',
       SENTRY_TOKEN_SSM_ID
     );
 
