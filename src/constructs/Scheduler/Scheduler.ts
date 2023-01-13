@@ -12,7 +12,7 @@ export class Scheduler extends Construct {
   constructor(scope: Construct) {
     super(scope, 'Scheduler');
 
-    const fn = new NodejsFunction(this, 'lambda', {
+    const fn = new NodejsFunction(this, 'Lambda', {
       entry: `${__dirname}/handler.ts`,
       runtime: Runtime.NODEJS_18_X,
       environment: {
@@ -24,14 +24,14 @@ export class Scheduler extends Construct {
       },
     });
 
-    new Rule(this, 'rule', {
+    new Rule(this, 'Rule', {
       schedule: Schedule.rate(Duration.minutes(CHECK_RATE)),
       targets: [new LambdaFunction(fn)],
     });
 
     const sentrySecret = Secret.fromSecretNameV2(
       this,
-      'sentry-token',
+      'Sentry-token',
       SENTRY_TOKEN_SSM_ID
     );
 

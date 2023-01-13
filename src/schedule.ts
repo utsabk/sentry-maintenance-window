@@ -7,6 +7,6 @@ export const schedule: Schedule = [
   {
     projectSlug: 'skf-dmc-bearing-backend',
     publicKey: 'd835311c799b4743a7b83e7258663315',
-    maintenanceWindow: ['2023-01-13T12:00Z', '2023-01-13T12:10Z'],
+    maintenanceWindow: ['2023-01-13T12:35Z', '2023-01-13T12:40Z'],
   },
 ];
