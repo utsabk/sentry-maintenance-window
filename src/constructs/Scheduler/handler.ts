@@ -74,7 +74,7 @@ async function getSentryToken() {
   return SecretString;
 }
 
-async function toggleSentryKey({
+function toggleSentryKey({
   isActive,
   projectSlug,
   sentryToken,
