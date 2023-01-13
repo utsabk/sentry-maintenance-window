@@ -14,6 +14,8 @@ Add an entry to `src/config.ts`. Example:
 },
 ```
 
+You can get "projectSlug" from *Project Settings > Name*, and "clientKey" from *Projct Settings > Client Keys (DSN) > Configure > Public Key*.
+
 ## Deploy
 
 Push to *main* branch.
