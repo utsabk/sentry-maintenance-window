@@ -63,7 +63,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
 function isInRange(targetDateString: string, dateNow: Date) {
   const target = new Date(targetDateString).getTime();
   const now = dateNow.getTime();
-  return now >= target && now < target + CHECK_RATE * 60 * 1000;
+  return target > now && target < now + CHECK_RATE * 60 * 1000;
 }
 
 async function getSentryToken() {

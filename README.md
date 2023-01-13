@@ -2,6 +2,8 @@
 
 This is used to disable a Sentry client key for a certain period.
 
+
+
 ## How to use
 
 Add an entry to `src/config.ts`. Example:
@@ -24,7 +26,7 @@ Push to *main* branch.
 
 ## Changing AWS account, credentials and secrets
 
-AWS account and region are set in `src/app` and `.github/workflows/deployment.yml`.
+AWS account and region are set in `src/app.ts` and `.github/workflows/deployment.yml`.
 
 AWS credentials are stored in [GitHub Secrets](https://github.com/nordcloud/sentry-maintenance-window/settings/secrets/actions).
 
