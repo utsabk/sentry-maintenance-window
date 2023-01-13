@@ -1,4 +1,4 @@
-import { CHECK_RATE } from './constructs/Scheduler/consts';
+import { CHECK_RATE_MILLIS } from './constructs/Scheduler/consts';
 import { schedule } from './schedule';
 
 describe('schedule', () => {
@@ -7,7 +7,7 @@ describe('schedule', () => {
       const startTime = new Date(maintenanceWindow[0]).getTime();
       const endTime = new Date(maintenanceWindow[1]).getTime();
 
-      expect(endTime - startTime).toBeGreaterThanOrEqual(CHECK_RATE * 60 * 1000);
+      expect(endTime - startTime).toBeGreaterThanOrEqual(CHECK_RATE_MILLIS);
     });
   });
 });
