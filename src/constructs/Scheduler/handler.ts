@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
     throw new Error('Sentry token is missing!');
   }
 
-  return Promise.allSettled(
+  return Promise.all(
     pendingItems.map(async ({ projectSlug, clientKey, downtimePeriod }) => {
       try {
         const [startDate] = downtimePeriod;
