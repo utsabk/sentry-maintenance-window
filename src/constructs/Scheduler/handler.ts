@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   });
 
   if (!pendingItems.length) {
-    console.log('No pending items, exiting.');
+    console.log('Nothing to do, exiting.');
     return undefined;
   }
 
