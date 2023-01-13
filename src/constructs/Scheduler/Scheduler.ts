@@ -1,4 +1,3 @@
-import { NestedStack } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -8,7 +7,7 @@ import { Construct } from 'constructs';
 
 import { SENTRY_TOKEN_SSM_ID } from './consts';
 
-export class Scheduler extends NestedStack {
+export class Scheduler extends Construct {
   constructor(scope: Construct) {
     super(scope, 'Scheduler');
 
