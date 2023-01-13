@@ -2,7 +2,7 @@
   "name": "sentry-maintenance-window",
   "version": "0.0.0",
   "scripts": {
-    "all": "npm test && npm run check && npm run lint && npm run",
+    "all": "npm test && npm run check && npm run lint && npm run synth",
     "test": "jest",
     "check": "tsc",
     "lint": "eslint ./",
