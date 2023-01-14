@@ -6,7 +6,7 @@ import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import fetch from 'node-fetch';
 
 import { schedule } from '../../schedule';
-import { CHECK_RATE_MILLIS, ORGANIZATION_SLUG, SENTRY_TOKEN_SSM_ID } from './consts';
+import { CHECK_RATE_MS, ORGANIZATION_SLUG, SENTRY_TOKEN_SSM_ID } from './consts';
 
 const ssmClient = new SecretsManagerClient({});
 
@@ -63,7 +63,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
 function isInRange(targetDateString: string, dateNow: Date) {
   const target = new Date(targetDateString).getTime();
   const now = dateNow.getTime();
-  return target > now && target < now + CHECK_RATE_MILLIS;
+  return target > now && target < now + CHECK_RATE_MS;
 }
 
 async function getSentryToken() {

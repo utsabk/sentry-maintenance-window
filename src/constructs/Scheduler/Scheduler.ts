@@ -6,7 +6,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 
-import { CHECK_RATE_MILLIS, SENTRY_TOKEN_SSM_ID } from './consts';
+import { CHECK_RATE_MS, SENTRY_TOKEN_SSM_ID } from './consts';
 
 export class Scheduler extends Construct {
   constructor(scope: Construct) {
@@ -25,7 +25,7 @@ export class Scheduler extends Construct {
     });
 
     new Rule(this, 'Rule', {
-      schedule: Schedule.rate(Duration.millis(CHECK_RATE_MILLIS)),
+      schedule: Schedule.rate(Duration.millis(CHECK_RATE_MS)),
       targets: [new LambdaFunction(fn)],
     });
 
