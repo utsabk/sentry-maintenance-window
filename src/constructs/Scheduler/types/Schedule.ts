@@ -2,6 +2,6 @@ type DateString = `${number}-${number}-${number}T${number}:${number}Z`;
 
 export type Schedule = Array<{
   projectSlug: string;
-  publicKey: string;
+  clientKeyId: string;
   maintenanceWindow: [DateString, DateString];
 }>;

@@ -33,7 +33,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
   }
 
   return Promise.all(
-    pendingItems.map(async ({ projectSlug, publicKey, maintenanceWindow }) => {
+    pendingItems.map(async ({ projectSlug, clientKeyId, maintenanceWindow }) => {
       try {
         const [startDate] = maintenanceWindow;
         const newStateActive = !isInRange(startDate, dateNow);
@@ -41,13 +41,13 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
         console.log(
           `${
             newStateActive ? 'Activating' : 'Deactivating'
-          } key "${publicKey}" for project "${projectSlug}"`
+          } key "${clientKeyId}" for project "${projectSlug}"`
         );
 
         const response = await toggleSentryKey({
           projectSlug,
           sentryToken,
-          publicKey,
+          clientKeyId,
           isActive: newStateActive,
         });
 
@@ -78,14 +78,14 @@ function toggleSentryKey({
   isActive,
   projectSlug,
   sentryToken,
-  publicKey,
+  clientKeyId,
 }: {
   isActive: boolean;
   projectSlug: string;
   sentryToken: string;
-  publicKey: string;
+  clientKeyId: string;
 }) {
-  const url = `https://sentry.io/api/0/projects/${ORGANIZATION_SLUG}/${projectSlug}/keys/${publicKey}/`;
+  const url = `https://sentry.io/api/0/projects/${ORGANIZATION_SLUG}/${projectSlug}/keys/${clientKeyId}/`;
 
   const headers = {
     'Content-Type': 'application/json',

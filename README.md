@@ -11,14 +11,14 @@ Add an entry to `src/schedule.ts`. Example:
 ```
 {
   projectSlug: 'slug',
-  publicKey: 'key',
+  clientKeyId: 'key',
   maintenanceWindow: ['2023-01-12T10:00Z', '2023-01-12T10:30Z']
 },
 ```
 
 Get **projectSlug** from `Project Settings > Name`
 
-Get **publicKey** from `Projct Settings > Client Keys (DSN) > Configure > Public Key`
+Get **clientKeyId** from `Projct Settings > Client Keys (DSN) > Configure > Public Key`
 
 ## Deploy
 
