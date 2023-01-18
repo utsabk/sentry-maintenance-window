@@ -2,7 +2,7 @@ import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
-import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
+import { ScheduledHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
 
 import { schedule } from '../../schedule';
@@ -10,7 +10,7 @@ import { CHECK_RATE_MS, ORGANIZATION_SLUG, SENTRY_TOKEN_SSM_ID } from './consts'
 
 const ssmClient = new SecretsManagerClient({});
 
-export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
+export const handler: ScheduledHandler = async () => {
   const dateNow = new Date();
 
   const pendingItems = schedule.filter(({ maintenanceWindow }) => {
@@ -20,11 +20,12 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
 
   if (!pendingItems.length) {
     console.log('Nothing to do, exiting.');
-    return undefined;
+    return;
   }
 
   console.log('Fetching Sentry token.');
-  const sentryToken = await getSentryToken();
+
+  const sentryToken = await fetchSentryToken();
 
   if (sentryToken) {
     console.log('Sentry token fetched.');
@@ -32,7 +33,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
     throw new Error('Sentry token is missing!');
   }
 
-  return Promise.all(
+  await Promise.all(
     pendingItems.map(async ({ projectSlug, clientKeyId, maintenanceWindow }) => {
       try {
         const [startDate] = maintenanceWindow;
@@ -41,7 +42,7 @@ export const handler: APIGatewayProxyHandlerV2<unknown> = async () => {
         console.log(
           `${
             newStateActive ? 'Activating' : 'Deactivating'
-          } key "${clientKeyId}" for project "${projectSlug}"`
+          } key "${clientKeyId}" for project "${projectSlug}".`
         );
 
         const response = await toggleSentryKey({
@@ -66,7 +67,7 @@ function isInRange(targetDateString: string, dateNow: Date) {
   return target > now && target < now + CHECK_RATE_MS;
 }
 
-async function getSentryToken() {
+async function fetchSentryToken() {
   const command = new GetSecretValueCommand({
     SecretId: SENTRY_TOKEN_SSM_ID,
   });
