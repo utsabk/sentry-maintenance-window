@@ -5,8 +5,8 @@ import { Schedule } from './constructs/Scheduler/types';
 
 export const schedule: Schedule = [
   {
-    projectSlug: 'skf-dmc-bearing-backend',
-    clientKeyId: 'd835311c799b4743a7b83e7258663315',
-    maintenanceWindow: ['2023-01-13T13:10Z', '2023-01-13T13:15Z'],
+    projectSlug: 'konecranes-cgmv-backend',
+    clientKeyId: 'a5385b935b3e431e98f5f3da740aac97',
+    maintenanceWindow: ['2023-03-18T02:00Z', '2023-03-19T22:00Z'], 
   },
 ];
