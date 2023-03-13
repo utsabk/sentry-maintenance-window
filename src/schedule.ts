@@ -7,6 +7,6 @@ export const schedule: Schedule = [
   {
     projectSlug: 'konecranes-cgmv-backend',
     clientKeyId: 'a5385b935b3e431e98f5f3da740aac97',
-    maintenanceWindow: ['2023-03-18T02:00Z', '2023-03-19T22:00Z'], 
+    maintenanceWindow: ['2023-03-18T02:00Z', '2023-03-19T22:00Z'],
   },
 ];
